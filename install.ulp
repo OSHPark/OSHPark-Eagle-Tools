@@ -1,0 +1,80 @@
+
+// Find some useful locations
+string SELF=argv[0];
+string SELF_DIR=filedir(SELF);
+string ULP_DIR=path_ulp[0];
+string SCR_DIR=path_scr[0];
+string BIN_DIR=filedir(EAGLE_PATH);
+string EAGLESCR_PATH=SCR_DIR+"/eagle.scr";
+
+string LOGFILE="oshpark_ulp_installer.log";
+
+void copy_file(string SOURCE, string DEST){
+	char DATA[];
+	int SIZE=fileread(DATA,SOURCE);
+	output(DEST,"wb"){
+		for (int i = 0; i < SIZE; i++) {
+			printf("%c", DATA[i]);
+		}
+	}
+}
+
+output(LOGFILE,"wtD") {
+	// Get the script name
+	printf("Script self: %s\n",SELF);
+	printf("Script self dir: %s\n",SELF_DIR);
+	printf("ULP Dir: %s\n",ULP_DIR);
+	printf("SCR Dir: %s\n",SCR_DIR);
+	printf("BIN Dir: %s\n",BIN_DIR);
+
+	// Copy some files
+	copy_file(SELF_DIR+"/oshpark.png",BIN_DIR+"/oshpark.png");
+	copy_file(SELF_DIR+"/oshpark.ulp",ULP_DIR+"/oshpark.ulp");
+	string FILETIME;
+	sprintf(FILETIME,".bak.%d",filetime(EAGLESCR_PATH));
+	copy_file(EAGLESCR_PATH,EAGLESCR_PATH+FILETIME);
+
+	string MENU_STR=" '[oshpark.png]Oshpark{Upload PCB: Run oshpark.ulp;}'";
+	printf("%s\n",MENU_STR);
+
+	// Dig through the existing Eagle.scr and add our menu item
+	string EAGLE_SCR_DATA[];
+	int EAGLE_SCR_DATA_SIZE;
+	EAGLE_SCR_DATA_SIZE=fileread(EAGLE_SCR_DATA,SCR_DIR+"/eagle.scr");
+
+	string LINE;
+	int BRD_START=-1;
+	int BRD_END=-1;
+	int i;
+
+	// Find the BRD section
+	for(i=0;i<EAGLE_SCR_DATA_SIZE; i++){
+		LINE=EAGLE_SCR_DATA[i];
+		BRD_START=i;
+		if(strstr(LINE,"BRD:")==0 ){
+			break;
+		}
+	}
+	// Scan for the next section
+	for(i=BRD_START+1;i<EAGLE_SCR_DATA_SIZE; i++){
+		LINE=EAGLE_SCR_DATA[i];
+		BRD_END=i;
+		if(strxstr(LINE,"[A-Z]{3}:")==0 ){
+			break;
+		}
+	}
+	printf("Found a brd section from %d to %d\n", BRD_START,BRD_END);
+
+	// Print a new menu line at the end of the BRD section
+	output(EAGLESCR_PATH,"wt"){
+		for(i=0;i<EAGLE_SCR_DATA_SIZE; i++){
+			if(i==BRD_END && BRD_START==EAGLE_SCR_DATA_SIZE){
+				printf("BRD:\r\n");
+				}
+			if(i==BRD_END){
+				printf("MENU %s;\r\n",MENU_STR);
+			}
+			printf("%s\r\n",EAGLE_SCR_DATA[i]);
+		}
+	}
+}

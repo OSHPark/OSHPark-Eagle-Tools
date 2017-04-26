@@ -1,0 +1,58 @@
+string LOGFILE="oshpark_ulp.log";
+output(LOGFILE,"wtD") {
+
+	string OSHPARKURL="http://oshpark.com/import.eagle_import";
+	sprintf(OSHPARKURL,"%s?version=%s",OSHPARKURL,VERSION);
+	string VERSION="1.0.0";
+
+
+	printf("Script self: %s\n",argv[0]);
+
+	string BRDPATH="";
+	board(B) {
+		BRDPATH=B.name;
+	}
+
+	printf("Using file: %s\n", BRDPATH);
+	printf("Sending to %s\n",OSHPARKURL);
+
+	string BRDDATA;
+	fileread(BRDDATA, BRDPATH);
+
+	string RESPONSE="";
+	int SUCCESS=0;
+	string POSTDATA="";
+	string CONTENTTYPE="";
+
+	// A proper POST upload requires a multi-part form.
+	// Eagle does notively support this POST format, so 
+	// the multi-part must be created manually.
+	string BOUNDARY="BRDFILEBOUNDARYLINE";
+	CONTENTTYPE="multipart/form-data; boundary="+BOUNDARY;
+	string FILENAME="hello.brd";
+	string FILEHEADER="";
+	sprintf(
+		FILEHEADER,
+		"Content-Disposition: form-data; name=\"file\"; filename=\"%s\"\nContent-Type: application/octet-stream\r\n",
+		FILENAME
+	);
+
+	sprintf(POSTDATA,
+		"--%s\r\n"+
+		"%s\r\n"+
+		"%s\r\n"+
+		"--%s--",
+		BOUNDARY,FILEHEADER,BRDDATA,BOUNDARY
+		);
+
+	SUCCESS=netpost(RESPONSE,OSHPARKURL,POSTDATA,10,CONTENTTYPE);
+	if(SUCCESS >= 0) {
+		printf("%s\n",RESPONSE);
+		dlgMessageBox(RESPONSE);
+	}else{
+		printf("%s\n",neterror());
+		dlgMessageBox(neterror());
+	}
+}
+
+

@@ -5,6 +5,7 @@ string ULP_DIR=path_ulp[0];
 string DRU_DIR=path_dru[0];
 string CAM_DIR=path_cam[0];
 string SCR_DIR=path_scr[0];
+string LBR_DIR=path_lbr[0];
 string BIN_DIR=filedir(EAGLE_PATH);
 string EAGLESCR_PATH=SCR_DIR+"/eagle.scr";
 string LOGFILE="oshpark_ulp_installer.log";
@@ -70,6 +71,15 @@ void compare_copy(string SOURCE,string DEST){
 	printf("> Identical! Do nothing...\n");
 }
 
+void copy_dir(string SOURCE,string DEST){
+	int NUM;
+	string FILES[];
+	NUM=fileglob(FILES,SOURCE);
+	for(int i=0; i<NUM;i++){
+		compare_copy(FILES[i],DEST+"/"+filename(FILES[i]));
+	}
+}
+
 output(LOGFILE,"wtD") {
 	// Get the script name
 	printf("Script self: %s\n",SELF);
@@ -78,30 +88,24 @@ output(LOGFILE,"wtD") {
 	printf("SCR Dir: %s\n",SCR_DIR);
 	printf("BIN Dir: %s\n",BIN_DIR);
 
-	// Copy over new files
-	backup_file(EAGLESCR_PATH);
-	compare_copy(SELF_DIR+"/oshpark.png",BIN_DIR+"/oshpark.png");
-	compare_copy(SELF_DIR+"/ulp/oshpark.ulp",ULP_DIR+"/oshpark.ulp");
-	compare_copy(SELF_DIR+"/dru/oshpark-2layer.dru",DRU_DIR+"/oshpark-2layer.dru");
-	compare_copy(SELF_DIR+"/dru/oshpark-4layer.dru",DRU_DIR+"/oshpark-4layer.dru");
-
 	real VERSION=EAGLE_VERSION+EAGLE_RELEASE/10.0;
 	printf("Found Eagle Version %f\n",VERSION);
+
+	// Copy over new files
+	copy_dir(SELF_DIR+"/ulp/",ULP_DIR);
+	copy_dir(SELF_DIR+"/bin/",BIN_DIR);
+	copy_dir(SELF_DIR+"/dru/",DRU_DIR);
+	copy_dir(SELF_DIR+"/lbr/",LBR_DIR);
+
 	if(VERSION>=7.2){
-		compare_copy(SELF_DIR+"/cam/OSHPark-2layer-Eagle-v7.2+.cam",
-			CAM_DIR+"/oshpark-2-layer.cam");
-		compare_copy(SELF_DIR+"/cam/OSHPark-4layer-Eagle-v7.2+.cam",
-			CAM_DIR+"/oshpark-4-layer.cam");
+		copy_dir(SELF_DIR+"/cam-7.2+/",CAM_DIR);
 	}
 	else{
-		compare_copy(SELF_DIR+"/cam/OSHPark-2layer-Eagle-v4.0-v7.1.cam",
-			CAM_DIR+"/oshpark-2-layer.cam");
-		compare_copy(SELF_DIR+"/cam/OSHPark-4layer-Eagle-v4.0-v7.1.cam",
-			CAM_DIR+"/oshpark-4-layer.cam");
+		copy_dir(SELF_DIR+"/cam/",CAM_DIR);
 	}
 
-	string MENU_STR=" '[oshpark.png]Oshpark{Upload PCB: Run oshpark.ulp;}'";
-	printf("%s\n",MENU_STR);
+	string MENU_STR=" '[oshpark.png]Oshpark{Upload PCB: Run oshpark-upload.ulp;}'";
+	sprintf(MENU_STR,"MENU %s;\r\n",MENU_STR);
 
 	// Dig through the existing Eagle.scr and add our menu item
 	string EAGLE_SCR_DATA[];
@@ -131,16 +135,28 @@ output(LOGFILE,"wtD") {
 	}
 	printf("Found a brd section from %d to %d\n", BRD_START,BRD_END);
 
-	// Print a new menu line at the end of the BRD section
-	output(EAGLESCR_PATH,"wt"){
-		for(i=0;i<EAGLE_SCR_DATA_SIZE; i++){
-			if(i==BRD_END && BRD_START==EAGLE_SCR_DATA_SIZE){
-				printf("BRD:\r\n");
+	//don't mangle the file unless we need to.
+
+	if(BRD_END>0 && strstr(EAGLE_SCR_DATA[BRD_END-1],MENU_STR)>=0){
+		printf("Menu already installed!\n");
+		printf("> %s\n", EAGLE_SCR_DATA[BRD_END-1]);
+	}
+	else{
+		printf("Installing menu.!\n");
+		printf(">> %s",MENU_STR);
+
+		backup_file(EAGLESCR_PATH);
+		// Print a new menu line at the end of the BRD section
+		output(EAGLESCR_PATH,"wt"){
+			for(i=0;i<EAGLE_SCR_DATA_SIZE; i++){
+				if(i==BRD_END && BRD_START==EAGLE_SCR_DATA_SIZE){
+					printf("BRD:\r\n");
+					}
+				if(i==BRD_END){
+					printf(MENU_STR);
 				}
-			if(i==BRD_END){
-				printf("MENU %s;\r\n",MENU_STR);
+				printf("%s\r\n",EAGLE_SCR_DATA[i]);
 			}
-			printf("%s\r\n",EAGLE_SCR_DATA[i]);
 		}
 	}
 }

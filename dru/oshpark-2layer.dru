@@ -1,4 +1,3 @@
-description[de] = <b>EAGLE Design Rules</b>\n<p>\nDie Standard-Design-Rules sind so gewählt, dass sie für \ndie meisten Anwendungen passen. Sollte ihre Platine \nbesondere Anforderungen haben, treffen Sie die erforderlichen\nEinstellungen hier und speichern die Design Rules unter \neinem neuen Namen ab.
 description[en] = <b>Laen's PCB Order Design Rules</b>\n<p>\nPlease make sure your boards conform to these design rules.
 layerSetup = (1*16)
 mtCopper = 0.0356mm 0.0356mm 0.0356mm 0.0356mm 0.0356mm 0.0356mm 0.0356mm 0.0356mm 0.0356mm 0.0356mm 0.0356mm 0.0356mm 0.0356mm 0.0356mm 0.0356mm 0.0356mm

@@ -3,6 +3,8 @@
 string SELF=argv[0];
 string SELF_DIR=filedir(SELF);
 string ULP_DIR=path_ulp[0];
+string DRU_DIR=path_dru[0];
+string CAM_DIR=path_cam[0];
 string SCR_DIR=path_scr[0];
 string BIN_DIR=filedir(EAGLE_PATH);
 string EAGLESCR_PATH=SCR_DIR+"/eagle.scr";
@@ -19,7 +21,27 @@ void copy_file(string SOURCE, string DEST){
 	}
 }
 
-output(LOGFILE,"wtD") {
+void backup_file(string SOURCE){
+	//Check to make sure the file exists
+	string tmp[];
+	int FOUND=fileglob(tmp,SOURCE);
+	if(FOUND<1)return;
+
+	string SUFFIX;
+	sprintf(SUFFIX,".bak.%d",filetime(SOURCE));
+	copy_file(SOURCE,SOURCE+SUFFIX);
+}
+
+
+//output(LOGFILE,"wtD") {
+output(LOGFILE,"wt") {
+
+	string files[];
+	int count=fileglob(files,"nonexistent");
+	printf("Found %d nonexistent files \n\n",count);
+
+
+
 	// Get the script name
 	printf("Script self: %s\n",SELF);
 	printf("Script self dir: %s\n",SELF_DIR);
@@ -27,12 +49,33 @@ output(LOGFILE,"wtD") {
 	printf("SCR Dir: %s\n",SCR_DIR);
 	printf("BIN Dir: %s\n",BIN_DIR);
 
-	// Copy some files
+	//Create backups of some files we might overwrite or modify
+	backup_file(CAM_DIR+"/oshpark-2-layer.cam");
+	backup_file(CAM_DIR+"/oshpark-4-layer.cam");
+	backup_file(DRU_DIR+"/oshpark-2layer.dru");
+	backup_file(DRU_DIR+"/oshpark-4layer.dru");
+	backup_file(EAGLESCR_PATH);
+
+	// Copy over new files
 	copy_file(SELF_DIR+"/oshpark.png",BIN_DIR+"/oshpark.png");
-	copy_file(SELF_DIR+"/oshpark.ulp",ULP_DIR+"/oshpark.ulp");
-	string FILETIME;
-	sprintf(FILETIME,".bak.%d",filetime(EAGLESCR_PATH));
-	copy_file(EAGLESCR_PATH,EAGLESCR_PATH+FILETIME);
+	copy_file(SELF_DIR+"/ulp/oshpark.ulp",ULP_DIR+"/oshpark.ulp");
+	copy_file(SELF_DIR+"/dru/oshpark-2layer.dru",DRU_DIR+"/oshpark-2layer.dru");
+	copy_file(SELF_DIR+"/dru/oshpark-4layer.dru",DRU_DIR+"/oshpark-4layer.dru");
+
+	real VERSION=EAGLE_VERSION+EAGLE_RELEASE/10.0;
+	printf("Found Eagle Version %f\n",VERSION);
+	if(VERSION>=7.2){
+		copy_file(SELF_DIR+"/cam/OSHPark-2layer-Eagle-v7.2+.cam",
+			CAM_DIR+"/oshpark-2-layer.cam");
+		copy_file(SELF_DIR+"/cam/OSHPark-4layer-Eagle-v7.2+.cam",
+			CAM_DIR+"/oshpark-4-layer.cam");
+	}
+	else{
+		copy_file(SELF_DIR+"/cam/OSHPark-2layer-Eagle-v4.0-v7.1.cam",
+			CAM_DIR+"/oshpark-2-layer.cam");
+		copy_file(SELF_DIR+"/cam/OSHPark-4layer-Eagle-v4.0-v7.1.cam",
+			CAM_DIR+"/oshpark-4-layer.cam");
+	}
 
 	string MENU_STR=" '[oshpark.png]Oshpark{Upload PCB: Run oshpark.ulp;}'";
 	printf("%s\n",MENU_STR);

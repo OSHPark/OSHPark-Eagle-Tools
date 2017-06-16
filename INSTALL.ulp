@@ -1,0 +1,6 @@
+
+#include "ulp/oshpark-install.ulp"
+string FILE_CACHE= filedir(argv[0]);
+output("oshpark_ulp.log","wD"){
+	install(FILE_CACHE);
+}

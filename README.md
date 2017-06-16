@@ -1,26 +1,38 @@
 # OSH Park Eagle scripts
 
-These scripts are to help Eagle users get orders in just a tad bit faster, and help keep things a bit more up to date.
+These scripts are to help Eagle users get orders in just a tad bit faster, and help keep your Eagle files a bit more up to date.
 
 This script will perform the following: 
 - Add a menu button to enable easy PCB ordering right from inside Eagle. 
-- Update your OSH Park CAM, and DRU files.
+- Update your OSH Park CAM, DRU, and ULP files.
+- Manage version-specific differences for CAM or DRC files. 
+In the future, we'll be adding improvements to the script to add cool new feautures.
 
 
 ## Installation (easy mode)
 
-The simple way is to run our installer script. This consists of a few short steps, and we'll figure out the file paths to copy things over. 
+The simplest way is to run our installer script. This consists of a few short steps, and we'll figure out the file paths to copy things over. 
 
 1. Download all the files here. 
+2. Open Eagle. 
+3. Open or create a BRD file.
+4. Select `File`, then `Run ULP`. On the file select dialog, browse to the files and select `INSTALL.ulp`.
+5. Should be all done! You'll new see a new ![](bin/oshpark.png) button on your top toolbar, and any CAM, DRC, or ULP files are now updated. Click it to see cool stuff!
 
-2. Open Eagle, to the Schematic or Board layout window. 
+Restart Eagle to see the new menu button.
 
-3. Select `File`, then `Run ULP`. On the file select dialog, browse to the files and select `install.ulp`.
+## Managing updates
+Once you've run the installer, you can select `Update and Install`. This will automatically fetch any updates from the Github repository, and re-run the installer. 
 
-4. Should be all done! Your files are now up to date, and you'll new see a new ![](bin/oshpark.png) button on your top toolbar. Click it to see cool stuff!
 
-In the future, we'll be adding improvements to the script to add cool new feautures.
+## Installation (command line)
+For Linux users with Eagle in the path, you can install this via command line with 
 
+```
+git clone https://github.com/OSHPark/OSHPark-Eagle-Tools.git
+cd OSHPark-Eagle-Tools
+eagle -C "RUN $PWD/INSTALL.ulp;quit;" blank.brd
+```
 
 ## Installation (hard mode)
 

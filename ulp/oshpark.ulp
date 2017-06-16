@@ -1,0 +1,32 @@
+
+#include "oshpark-utility-includes.ulp"
+#include "oshpark-update.ulp"
+#include "oshpark-install.ulp"
+
+int main(){
+	int i=0;
+	string ARG="";
+	int DO_UPDATE = 1;
+	int DO_INSTALL = 1;
+	string FILE_CACHE= filedir(argv[0])+"/tmp_oshpark/";
+
+	output("oshpark_ulp.log","wD"){
+		for(i=1;i<argc;i++){
+			ARG=argv[i];
+			printf("%s\n",ARG);
+
+			if(ARG=="update"){
+				update(FILE_CACHE);
+			}
+			else if(ARG=="install"){
+				install(FILE_CACHE);
+			}
+			else{
+				printf("Who knows!!\n");
+			}
+
+		}
+	printf("Done!!\n");
+	}
+	return 0;
+}

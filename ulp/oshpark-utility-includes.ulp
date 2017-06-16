@@ -1,0 +1,89 @@
+
+void mkdir(string DIR){
+	string TMP[];
+	if(fileglob(TMP,DIR) > 0){
+		return;
+	}
+	printf("Making %s/\n",DIR);
+
+	string DOScommand="";
+	if(OS_SIGNATURE == "Windows"){
+		//TODO: This needs functional testing on windows to validate it. 
+		// sprintf(DOScommand, "CMD.EXE /C MKDIR \"%s\"",DIR);
+		// system(DOScommand);
+	}
+	else{
+		system("mkdir -p "+DIR);
+	}
+}
+
+
+void copy_file(string SOURCE, string DEST){
+	char DATA[];
+	int SIZE=fileread(DATA,SOURCE);
+	output(DEST,"wb"){
+		for (int i = 0; i < SIZE; i++) {
+			printf("%c", DATA[i]);
+		}
+	}
+}
+
+void backup_file(string SOURCE){
+	//Check to make sure the file exists
+	string tmp[];
+	int FOUND=fileglob(tmp,SOURCE);
+	if(FOUND<1)return;
+
+	string SUFFIX;
+	sprintf(SUFFIX,".bak.%d",filetime(SOURCE));
+	copy_file(SOURCE,SOURCE+SUFFIX);
+}
+
+void compare_copy(string SOURCE,string DEST){
+	//See if source == dest
+	int SOURCE_SIZE;
+	char SOURCE_DATA[];
+	int DEST_SIZE;
+	char DEST_DATA[];
+
+	printf("Checking %s and %s \n",filename(SOURCE),DEST);
+
+	//see if file exists
+	string tmp[];
+	int FOUND=fileglob(tmp,DEST);
+	if(FOUND==0){
+		printf("> Not found! Copying...\n");
+		copy_file(SOURCE,DEST);
+		return;
+	}
+
+	SOURCE_SIZE=fileread(SOURCE_DATA,SOURCE);
+	DEST_SIZE=fileread(DEST_DATA,DEST);
+
+	if(SOURCE_SIZE!=DEST_SIZE){
+		printf("> Different sizes! Backup and copy...\n");
+		backup_file(DEST);
+		copy_file(SOURCE,DEST);
+		return;
+	}
+
+	//files might be the same
+	for(int i=0;i<SOURCE_SIZE;i++){
+		if(DEST_DATA[i]!=SOURCE_DATA[i]){
+			printf("> Not identical! Backup and copy...\n");
+			backup_file(DEST);
+			copy_file(SOURCE,DEST);
+			return;
+		}
+	}
+	printf("> Identical! Do nothing...\n");
+}
+
+void copy_dir(string SOURCE,string DEST){
+	int NUM;
+	string FILES[];
+	NUM=fileglob(FILES,SOURCE+"/*.*");
+	for(int i=0; i<NUM;i++){
+		compare_copy(FILES[i],DEST+"/"+filename(FILES[i]));
+	}
+}

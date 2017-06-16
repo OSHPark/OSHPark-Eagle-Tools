@@ -1,0 +1,94 @@
+string LOGFILE="oshpark_update.log";
+
+//under "Directives" in the manual
+#include "oshpark-utility-includes.ulp"
+
+// Returns -1 on error
+// Returns 0 if no updates available
+// Returns 1 if updates are available and downloaded
+int update(string TMPDIR){
+	printf("Hello from the updater!\n");
+
+	string SELF=argv[0];
+	string SELF_DIR=filedir(SELF);
+
+	string URL = "https://github.com/OSHPark/OSHPark-Eagle-Tools";
+	string UPDATEFILE = "UPDATE.txt";
+	string VERSIONFILE = "VERSION.txt";
+	string VERSION = "0.0";
+
+	int i=0;
+	string RESPONSE = "";
+	int SUCCESS = 0;
+	int TIMEOUT=4;
+
+	string FILES[];
+	char FILEDATA[];
+
+	// Get the current version
+	fileglob(FILES,TMPDIR+VERSIONFILE);
+	for(i=0; FILES[i] != "" ; i++){
+		fileread(RESPONSE,VERSIONFILE);
+		VERSION=RESPONSE;
+	}
+	printf("Current version is %s\n",VERSION);
+
+
+	//Get the newest version file
+	SUCCESS = netget(RESPONSE,URL+VERSIONFILE,TIMEOUT);
+	if(SUCCESS >= 0) {
+		printf("Found version file containing %s\n",RESPONSE);
+		if(strtod(VERSION)==strtod(RESPONSE)){
+			printf("Versions match! Nothing to do!\n");
+			return 0 ;
+		}
+	}else{
+		printf("Failed to find version file at %s\n",URL+VERSIONFILE);
+		printf("%s\n",neterror());
+	}
+
+	// Download the list of files!
+	SUCCESS = netget(FILES,URL+UPDATEFILE,TIMEOUT);
+	if(SUCCESS >= 0) {
+		printf("Found update file yay! %s\n",UPDATEFILE);
+	}else{
+		printf("Failed to find update file at %s\n",URL+UPDATEFILE);
+		printf("%s\n",neterror());
+		return -1;
+	}
+
+	// Do things with the files!
+	mkdir(TMPDIR);
+	string REGCOMMENT="^#";
+	string REGEXT="\\.[a-zA-Z]{2,3}$";
+	string FILE="";
+	for(i=0;FILES[i]!="";i++){
+		FILE=FILES[i];
+		//Skip comment lines
+		if(-1 != strxstr(FILE,REGCOMMENT)) continue;
+
+		//Directory, create a new folder!
+		if(-1 == strxstr(FILE,REGEXT)) {
+			printf("Got dir path!: %s\n",FILE);
+			mkdir(TMPDIR+FILE);
+			continue;
+		}
+		
+		// File, download it!
+		printf("Got file path!: %s\n",FILE);
+		SUCCESS = netget(FILEDATA,URL+FILE,TIMEOUT);
+		if(SUCCESS < 0) {
+			printf("Failed!\n");
+			continue;
+		}
+		output(TMPDIR+FILE,"wb"){
+			for(int x=0; x<SUCCESS;x++){
+				printf("%c", FILEDATA[x]);
+			}
+		}
+	}
+
+	printf("All done!\n");
+	return 1;
+}
+

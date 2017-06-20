@@ -6,11 +6,13 @@ void mkdir(string DIR){
 	}
 	printf("Making %s/\n",DIR);
 
-	string DOScommand="";
 	if(OS_SIGNATURE == "Windows"){
-		//TODO: This needs functional testing on windows to validate it. 
-		// sprintf(DOScommand, "CMD.EXE /C MKDIR \"%s\"",DIR);
-		// system(DOScommand);
+		string COMMAND="";
+		string PATHA[];
+		strsplit(PATHA,DIR,'/');
+		DIR=strjoin(PATHA,'\\');
+		sprintf(COMMAND, "CMD.EXE /C MKDIR \"%s\"",DIR);
+		system(COMMAND);
 	}
 	else{
 		system("mkdir -p "+DIR);

@@ -7,8 +7,11 @@ cam-7.2+
 cam-7.2+/oshpark-2layer.cam
 cam-7.2+/oshpark-4layer.cam
 dru
+dru/oshpark-2layer-tented.dru
 dru/oshpark-2layer.dru
 dru/oshpark-4layer.dru
+dru/oshpark-2layer-auto-routing.dru
+dru/oshpark-4layer-tented.dru
 INSTALL.ulp
 LICENSE.txt
 README.md

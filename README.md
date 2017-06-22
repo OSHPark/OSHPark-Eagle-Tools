@@ -6,7 +6,8 @@ This script will perform the following:
 - Add a menu button to enable easy PCB ordering right from inside Eagle. 
 - Update your OSH Park CAM, DRU, and ULP files.
 - Manage version-specific differences for CAM or DRC files. 
-In the future, we'll be adding improvements to the script to add cool new feautures.
+
+In the future, we'll be adding improvements to the script to hopefully add better integration and cool new feautures.
 
 
 ## Installation (easy mode)
@@ -17,12 +18,11 @@ The simplest way is to run our installer script. This consists of a few short st
 2. Open Eagle. 
 3. Open or create a BRD file.
 4. Select `File`, then `Run ULP`. On the file select dialog, browse to the files and select `INSTALL.ulp`.
-5. Should be all done! You'll new see a new ![](bin/oshpark.png) button on your top toolbar, and any CAM, DRC, or ULP files are now updated. Click it to see cool stuff!
-
-Restart Eagle to see the new menu button.
+5. Restart Eagle (otherwise you won't see the menu button).
+6. You'll new see a new ![](bin/oshpark.png) button on your top toolbar, and any CAM, DRC, or ULP files are now updated. Click it to see cool stuff!
 
 ## Managing updates
-Once you've run the installer, you can select `Update and Install`. This will automatically fetch any updates from the Github repository, and re-run the installer. 
+Once you've run the installer, you can select `Update and Install`. This will automatically fetch any updates from the Github repository, and re-run the installer.
 
 
 ## Installation (command line)
@@ -75,7 +75,7 @@ To add a button, we'll use the `MENU` command. This is most helpful under `BRD:`
 The simplest method is to simply add the following line after any existing `MENU` lines. Doing so will overwrite any previous Menu commands.
 
 ```
-MENU ' [oshpark.png]Oshpark{Upload PCB: Run oshpark-upload.ulp;}'
+MENU ' [oshpark.png]Oshpark{Upload PCB: RUN oshpark-upload.ulp;|Check for updates: RUN oshpark.ulp update;|Update and install:RUN oshpark.ulp update install;} ';
 ```
 
 If you have other `MENU` items want to use, you can add it to the existing line.
@@ -83,13 +83,13 @@ If you have other `MENU` items want to use, you can add it to the existing line.
 ```
 MENU 'Text1:action1;'\
      'Text2:action2;'\
-     '[oshpark.png]Oshpark{Upload PCB: Run oshpark-upload.ulp;}'\
+     ' [oshpark.png]Oshpark{Upload PCB: RUN oshpark-upload.ulp;|Check for updates: RUN oshpark.ulp update;|Update and install:RUN oshpark.ulp update install;} '\
      ;
 ```
 Note that you must use a `\` at the end of each line, and each command or block must have a space between them (in this example, the spaces are at the start of the line). More complex examples can be found in the `src` dir in your Eagle installation.
 
 ### Test the button!
 
-Click it! 
+Click it! You may need to restart Eagle to get it to show up.
 
 If everything worked properly, you should see a link to oshpark, where we've started processing the board!

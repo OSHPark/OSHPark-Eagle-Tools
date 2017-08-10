@@ -12,7 +12,7 @@ int update(string TMPDIR){
 	string SELF=argv[0];
 	string SELF_DIR=filedir(SELF);
 
-	string URL = "https://github.com/OSHPark/OSHPark-Eagle-Tools";
+	string URL = "https://raw.githubusercontent.com/OSHPark/OSHPark-Eagle-Tools/master/";
 	string UPDATEFILE = "UPDATE.txt";
 	string VERSIONFILE = "VERSION.txt";
 	string VERSION = "0.0";

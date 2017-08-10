@@ -6,7 +6,7 @@ void mkdir(string DIR){
 	}
 	printf("Making %s/\n",DIR);
 
-	if(OS_SIGNATURE == "Windows"){
+	if(-1 != strxstr(OS_SIGNATURE,"Windows")){
 		string COMMAND="";
 		string PATHA[];
 		strsplit(PATHA,DIR,'/');

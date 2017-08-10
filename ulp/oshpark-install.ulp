@@ -22,7 +22,7 @@ void install(string SOURCEDIR){
 		"|"+
 		"Update and install:RUN oshpark.ulp update install;"+
 	"} '";
-	sprintf(MENU_STR,"MENU %s;\r\n",MENU_STR);
+	sprintf(MENU_STR,"MENU %s;\n",MENU_STR);
 
 	// Get the script name
 	printf("Script self: %s\n",SELF);
@@ -50,6 +50,10 @@ void install(string SOURCEDIR){
 
 
 	// Dig through the existing Eagle.scr and add our menu item
+	// NOTE: Eagle replaces \n with \r\n during printfs, 
+	// so a correctly printed string will not match the scanned one
+	// without factoring in this substitution.
+
 	string EAGLE_SCR_DATA[];
 	int EAGLE_SCR_DATA_SIZE;
 	EAGLE_SCR_DATA_SIZE=fileread(EAGLE_SCR_DATA,SCR_DIR+"/eagle.scr");
@@ -93,12 +97,12 @@ void install(string SOURCEDIR){
 		output(EAGLESCR_PATH,"wt"){
 			for(i=0;i<EAGLE_SCR_DATA_SIZE; i++){
 				if(i==BRD_END && BRD_START==EAGLE_SCR_DATA_SIZE){
-					printf("BRD:\r\n");
+					printf("BRD:\n");
 					}
 				if(i==BRD_END){
 					printf(MENU_STR);
 				}
-				printf("%s\r\n",EAGLE_SCR_DATA[i]);
+				printf("%s\n",EAGLE_SCR_DATA[i]);
 			}
 		}
 	}

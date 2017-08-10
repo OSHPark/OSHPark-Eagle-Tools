@@ -28,7 +28,7 @@ int update(string TMPDIR){
 	// Get the current version
 	fileglob(FILES,TMPDIR+VERSIONFILE);
 	for(i=0; FILES[i] != "" ; i++){
-		fileread(RESPONSE,VERSIONFILE);
+		fileread(RESPONSE,FILES[i]);
 		VERSION=RESPONSE;
 	}
 	printf("Current version is %s\n",VERSION);

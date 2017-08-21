@@ -1,7 +1,7 @@
 string LOGFILE="oshpark_ulp.log";
 output(LOGFILE,"wtD") {
 
-	string OSHPARKURL="http://oshpark.com/import.eagle_import";
+	string OSHPARKURL="https://oshpark.com/import.eagle_import";
 	string VERSION="1.0.0";
 	sprintf(OSHPARKURL,"%s?version=%s",OSHPARKURL,VERSION);
 

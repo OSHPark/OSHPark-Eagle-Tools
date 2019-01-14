@@ -6,6 +6,8 @@ cam/oshpark-4layer.cam
 cam-7.2+
 cam-7.2+/oshpark-2layer.cam
 cam-7.2+/oshpark-4layer.cam
+cam-8.6+/OSHPark_2_layer.cam
+cam-8.6+/OSHPark_4_layer.cam
 dru
 dru/oshpark-2layer-tented.dru
 dru/oshpark-2layer.dru

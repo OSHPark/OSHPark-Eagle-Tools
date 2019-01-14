@@ -41,7 +41,10 @@ void install(string SOURCEDIR){
 	copy_dir(SOURCEDIR+"/dru/",DRU_DIR);
 	copy_dir(SOURCEDIR+"/lbr/",LBR_DIR);
 
-	if(VERSION>=7.2){
+	if(VERSION>=8.6){
+		copy_dir(SOURCEDIR+"/cam-8.6+/",CAM_DIR);
+	}
+	else if(VERSION>=7.2){
 		copy_dir(SOURCEDIR+"/cam-7.2+/",CAM_DIR);
 	}
 	else{
@@ -50,7 +53,7 @@ void install(string SOURCEDIR){
 
 
 	// Dig through the existing Eagle.scr and add our menu item
-	// NOTE: Eagle replaces \n with \r\n during printfs, 
+	// NOTE: Eagle replaces \n with \r\n during printfs,
 	// so a correctly printed string will not match the scanned one
 	// without factoring in this substitution.
 

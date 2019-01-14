@@ -10,7 +10,7 @@
     "outputs": [
         {
             "format_specifier": {
-                "decimal": 4,
+                "decimal": 3,
                 "integer": 3
             },
             "output_type": "drill",

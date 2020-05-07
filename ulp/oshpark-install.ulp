@@ -41,7 +41,10 @@ void install(string SOURCEDIR){
 	copy_dir(SOURCEDIR+"/dru/",DRU_DIR);
 	copy_dir(SOURCEDIR+"/lbr/",LBR_DIR);
 
-	if(VERSION>=7.2){
+	if(VERSION>=9.2){
+		copy_dir(SOURCEDIR+"/cam-9.2+/",CAM_DIR);
+	}
+	else if(VERSION>=7.2){
 		copy_dir(SOURCEDIR+"/cam-7.2+/",CAM_DIR);
 	}
 	else{

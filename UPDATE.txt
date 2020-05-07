@@ -10,6 +10,11 @@ cam-7.2+/oshpark-2layer-with-milling-slot-paths.cam
 cam-7.2+/oshpark-2layer.cam
 cam-7.2+/oshpark-4layer-with-milling-slot-paths.cam
 cam-7.2+/oshpark-4layer.cam
+cam-9.2+
+cam-9.2+/oshpark-2layer-with-milling-slot-paths.cam
+cam-9.2+/oshpark-2layer.cam
+cam-9.2+/oshpark-4layer-with-milling-slot-paths.cam
+cam-9.2+/oshpark-4layer.cam
 dru
 dru/oshpark-4layer-tented.dru
 dru/oshpark-4layer.dru

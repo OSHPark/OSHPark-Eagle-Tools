@@ -326,26 +326,6 @@
             ]
         },
         {
-            "filename_prefix": "CAMOutputs/Assembly",
-            "output_type": "assembly",
-            "outputs": [
-                {
-                    "filename_format": "%N.BOM",
-                    "list_attribute": true,
-                    "list_type": "values",
-                    "name": "Bill of Material",
-                    "output_format": "txt",
-                    "type": "bom"
-                },
-                {
-                    "filename_format": "%N.PNP.%BOARDSIDE",
-                    "name": "Pick and Place",
-                    "output_format": "txt",
-                    "type": "pick_and_place"
-                }
-            ]
-        },
-        {
             "filename_prefix": "CAMOutputs/DrawingFiles",
             "output_type": "drawing",
             "outputs": [
